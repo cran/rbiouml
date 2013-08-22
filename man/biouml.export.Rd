@@ -6,7 +6,7 @@
                      exporter.params=list(), target.file="biouml.out")}
 \arguments{
   \item{path}{path in BioUML repository}
-  \item{exporter}{character string specifying format}
+  \item{exporter}{character string specifying format, \code{\link{biouml.exporters}} provides possible values}
   \item{exporter.params}{list of parameters to exporter}
   \item{target.file}{a character string naming a file to export to}
 }

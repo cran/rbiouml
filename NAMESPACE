@@ -1,2 +1,5 @@
 import(RCurl, RJSONIO)
-export(biouml.get, biouml.analysis, biouml.login, biouml.logout, biouml.job.info, biouml.job.wait, biouml.put, biouml.export, biouml.import)
+export(biouml.get, biouml.analysis, biouml.login, biouml.logout,
+  biouml.job.info, biouml.job.wait, biouml.put, biouml.export, biouml.import,
+  biouml.ls, biouml.analysis.list, biouml.exporters, biouml.importers,
+  biouml.workflow, biouml.analysis.parameters, biouml.export.parameters, biouml.import.parameters)

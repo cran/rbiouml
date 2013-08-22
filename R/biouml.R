@@ -58,8 +58,12 @@ getConnection <- function()
   con
 }
 
-biouml.login <- function(user='', pass='', url='http://localhost:8080/biouml')
+biouml.login <- function(url='http://localhost:8080/biouml', user='', pass='')
 {
+  if(identical(grepl('^https?://', url), F))
+    url <- paste0("http://", url)
+  if(identical(grepl('/biouml/?$', url), F))
+    url <- paste0(url, '/biouml')
   invisible(biouml.reconnect(list(url=url, user=user, pass=pass)))
 }
 
@@ -80,7 +84,7 @@ biouml.reconnect <- function(con)
 biouml.logout <- function()
 {
   queryJSON('/web/logout')
-  return()
+  invisible(return())
 }
 
 next.job.id <- function()
@@ -167,7 +171,7 @@ biouml.put <- function(path, value)
   for(i in seq_len(ncol(value))) res[[ i + 1 ]] <- value[,i]
 
   queryJSON("/web/table/createTable", params=c(de=path, columns=toJSON(columns), data=toJSON(res)))
-  return()
+  invisible(NULL)
 }
 
 biouml.export <- function(path, exporter="Tab-separated text (*.txt)", exporter.params=list(), target.file="biouml.out")
@@ -188,4 +192,68 @@ biouml.import <- function(file, parentPath, importer, importer.params=list())
               format=importer, json=toJSON(importer.params))
   queryJSON("/web/import", params=params)
   biouml.job.wait(jobID)$results[[1]]
+}
+
+biouml.ls <- function(path, extended=F)
+{
+  resp <- queryJSON("/web/data", params=list(service='access.service', command=29, dc=path))
+  resp <- fromJSON(resp['values'], simplify=T, asText=T)
+
+  names <- sapply(resp$names, function(x) x['name'])
+  names(names) <- NULL
+  if(!extended) return(names);
+  hasChildren <- as.logical(sapply(resp$names, function(x) x['hasChildren']))
+  types <- sapply(resp$names, function(x) x['class'])
+  types <- resp$classes[as.numeric(types)+1L]
+  
+  data.frame(row.names=names, hasChildren=hasChildren, type=types)
+}
+
+biouml.analysis.list <- function()
+{
+  resp <- queryJSON("/web/analysis/list")
+  x <- strsplit(resp$values, '/')
+  data.frame(Group=sapply(x, function(a)a[1]), Name=sapply(x, function(a)a[2]))
+}
+
+biouml.exporters <- function()
+{
+  queryJSON("/web/export/list")$values
+}
+
+biouml.importers <- function()
+{
+  queryJSON("/web/import/list")$values
+}
+
+biouml.workflow <- function(path, parameters=list(), wait=T, verbose=T)
+{
+  jobID <- next.job.id()
+  parameters <- as.name.value( as.tree( parameters ) )
+  queryJSON("/web/research", params=c(jobID=jobID, action='start_workflow', de=path, json=toJSON(parameters)), method='post')
+  if(wait) biouml.job.wait(jobID, verbose)
+  jobID
+}
+
+biouml.parameters <- function(serverPath, params)
+{
+  nv.params <- queryJSON(serverPath, params=params, method="post", simplify=F)$values
+  expand <- function(e, prop) if(identical(e[['type']], "composite")) paste(e[[prop]], unlist(lapply(e$value, expand, prop=prop)), sep='/') else e[[prop]]
+  column <- function(prop) unlist(lapply(nv.params, expand, prop=prop))
+  data.frame(row.names=column("name"), description=column("description"))
+}
+
+biouml.analysis.parameters <- function(analysisName)
+{
+  biouml.parameters( "/web/bean/get", params=c(de=paste0("properties/method/parameters/", analysisName)) )
+}
+
+biouml.export.parameters <- function(path, exporter)
+{
+  biouml.parameters("/web/export", params=c(de=path, detype="Element", type="deParams", exporter=exporter))
+}
+
+biouml.import.parameters <- function(path, importer)
+{
+  biouml.parameters("/web/import", params=c(de=path, detype="Element", type="properties", format=importer, jobID=next.job.id()))
 }

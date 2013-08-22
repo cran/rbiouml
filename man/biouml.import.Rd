@@ -6,7 +6,7 @@
 \arguments{
   \item{file}{The name of file to import}
   \item{parentPath}{Path to folder in BioUML repository}
-  \item{importer}{character string specifying format}
+  \item{importer}{character string specifying format, \code{\link{biouml.importers}} provides list of posible values}
   \item{importer.params}{list of parameters to exporter}
 }
 \value{
