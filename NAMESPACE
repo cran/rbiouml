@@ -1,0 +1,2 @@
+import(RCurl, RJSONIO)
+export(biouml.get, biouml.analysis, biouml.login, biouml.logout, biouml.job.info, biouml.job.wait, biouml.put, biouml.export, biouml.import)

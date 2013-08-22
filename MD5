@@ -1,0 +1,12 @@
+ba5690e2bfd11b3d6ef791fbd04c16f7 *DESCRIPTION
+832cc2425fcc678ddf1098a4a5d6a260 *NAMESPACE
+c1c31c7f0a09f43966255ab7ffcd7977 *R/biouml.R
+b3d2017d7d00990a72cf3e98934776c4 *man/biouml.analysis.Rd
+f1f8254342331eacd2fc780aea31691a *man/biouml.export.Rd
+aa1a206167768b970a60d00321a1c794 *man/biouml.get.Rd
+b346f27e28ac5bba63bb2d6f96922dbe *man/biouml.import.Rd
+277c44dcf4bf41e36b1be4a573eb7b47 *man/biouml.job.info.Rd
+68ffab635ceeea90ecda7aef3e3578c3 *man/biouml.job.wait.Rd
+359d3b126c9911fe81314e5f6aecbaff *man/biouml.login.Rd
+f0d1da6eca2241c5cb4bd5b67a787205 *man/biouml.logout.Rd
+255955782710aa39ca353d539285adc1 *man/biouml.put.Rd
