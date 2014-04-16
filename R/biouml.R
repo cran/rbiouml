@@ -4,6 +4,8 @@ biouml.get <- function(path)
   tableInfo <- query("/web/table/columns")
   tableData <- query("/web/table/rawdata")
   
+  hidden <- sapply(tableInfo, function(colInfo) 'hidden' %in% names(colInfo) && colInfo['hidden'])
+  tableInfo <- tableInfo[!hidden]
   names(tableData) <- sapply(tableInfo, function(colInfo) colInfo['name']);
   list.to.data.frame.fast(tableData[-1], tableData[[1]])
 }
@@ -16,33 +18,23 @@ list.to.data.frame.fast <- function(a, rowNames)
   a
 }
 
-biouml.query <- function(serverPath, params=character(), method='get')
+biouml.query <- function(serverPath, params=character(), binary=F)
 {
   con <- getConnection()
   opts <- curlOptions( httpheader=paste("Cookie: JSESSIONID=", con$sessionId, sep='') )
   url <- paste(con$url, serverPath, sep='')
-  if(method=='get')
-  {
-    if(length(params) != 0)
-      url <- paste(url, paste(curlEscape(names(params)), curlEscape(params), sep='=',collapse='&' ), sep='?')
-    rawToChar(getBinaryURL(url, .opts=opts))
-  }
-  else if(method=='post')
-  {
-    postForm(url, .params=params, .opts=opts)
-  }
-  else stop("Unknown method, only get and post allowed")
+  postForm(url, .params=params, .opts=opts, binary=binary)
 }
 
-queryJSON <- function(serverPath, params=list(), method='get', simplify=T, reconnect=T)
+queryJSON <- function(serverPath, params=list(), simplify=T, reconnect=T)
 {
-  content <- biouml.query(serverPath, params, method)
+  content <- biouml.query(serverPath, params)
   json <- fromJSON(content, simplify=simplify, asText=T)
   responseType <- as.numeric(as.list(json)$type)
   if( responseType == 3 && reconnect)
   {
     con <- biouml.reconnect(con)
-    return(queryJSON(serverPath, params, method, simplify, reconnect=F))
+    return(queryJSON(serverPath, params, simplify, reconnect=F))
   }
   else if(responseType != 0)
   {
@@ -98,14 +90,14 @@ biouml.analysis <- function(analysisName, parameters=list(), wait=T, verbose=T)
 {
   jobID <- next.job.id()
   parameters <- as.name.value( as.tree( parameters ) )
-  queryJSON("/web/analysis", params=c(jobID=jobID, de=analysisName, json=toJSON(parameters)), method='post')
+  queryJSON("/web/analysis", params=c(jobID=jobID, de=analysisName, json=toJSON(parameters)))
   if(wait) biouml.job.wait(jobID, verbose)
   jobID
 }
 
 biouml.job.info <- function(jobID)
 {
-  info <- queryJSON("/web/jobcontrol", params=c(jobID=jobID), method='post', simplify=F)
+  info <- queryJSON("/web/jobcontrol", params=c(jobID=jobID), simplify=F)
   info$status <- c('CREATED','RUNNING', 'PAUSED', 'COMPLETED', 'TERMINATED_BY_REQUEST', 'TERMINATED_BY_ERROR')[info$status+1L]
   info
 }
@@ -177,8 +169,10 @@ biouml.put <- function(path, value)
 biouml.export <- function(path, exporter="Tab-separated text (*.txt)", exporter.params=list(), target.file="biouml.out")
 {
   exporter.params <- as.name.value(as.tree(exporter.params))
-  content <- biouml.query("/web/export", params=list(exporter=exporter, type="de", detype="Element", de=path, parameters=toJSON(exporter.params)))
-  cat(content, file=target.file)
+  content <- biouml.query("/web/export", params=list(exporter=exporter, type="de", detype="Element", de=path, parameters=toJSON(exporter.params)), binary=T)
+  out <- file(target.file, "wb")
+  writeBin(as.vector(content), con=out)
+  close(out)
 }
 
 biouml.import <- function(file, parentPath, importer, importer.params=list())
@@ -186,7 +180,7 @@ biouml.import <- function(file, parentPath, importer, importer.params=list())
   fileID <- next.job.id();
   jobID <- next.job.id();
   params <- list(fileID=fileID, file=fileUpload(file))
-  biouml.query("/web/upload", params=params, method='post')
+  biouml.query("/web/upload", params=params)
   importer.params <- as.name.value(as.tree(importer.params))
   params=list(type="import", de=parentPath, fileID=fileID, jobID=jobID,
               format=importer, json=toJSON(importer.params))
@@ -230,14 +224,14 @@ biouml.workflow <- function(path, parameters=list(), wait=T, verbose=T)
 {
   jobID <- next.job.id()
   parameters <- as.name.value( as.tree( parameters ) )
-  queryJSON("/web/research", params=c(jobID=jobID, action='start_workflow', de=path, json=toJSON(parameters)), method='post')
+  queryJSON("/web/research", params=c(jobID=jobID, action='start_workflow', de=path, json=toJSON(parameters)))
   if(wait) biouml.job.wait(jobID, verbose)
   jobID
 }
 
 biouml.parameters <- function(serverPath, params)
 {
-  nv.params <- queryJSON(serverPath, params=params, method="post", simplify=F)$values
+  nv.params <- queryJSON(serverPath, params=params, simplify=F)$values
   expand <- function(e, prop) if(identical(e[['type']], "composite")) paste(e[[prop]], unlist(lapply(e$value, expand, prop=prop)), sep='/') else e[[prop]]
   column <- function(prop) unlist(lapply(nv.params, expand, prop=prop))
   data.frame(row.names=column("name"), description=column("description"))

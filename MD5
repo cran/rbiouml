@@ -1,10 +1,10 @@
-ef29c1251c94fe0323efe738734ab0b2 *DESCRIPTION
+6c5e8ec53b22ae9eda41f44b4da89409 *DESCRIPTION
 ae10a2cc7497e4e6b9712c2f5c3998a4 *NAMESPACE
-392885e5d047da823ffa0708e0e6f49a *R/biouml.R
-e053a496be8a28740d185eef5ded832b *build/vignette.rds
+b271f72e2977503367f5814d68205a10 *R/biouml.R
+f9f6e5fbb177be5dea9a0e63bbf55593 *build/vignette.rds
 ecf86eb1cb1a79aa72fbd16ca8e00c3d *inst/doc/rbiouml.R
 e118bcf3bddf08e43929cf97f94c83f3 *inst/doc/rbiouml.Rnw
-a08c3fb10624c1a2175d9d5852bde748 *inst/doc/rbiouml.pdf
+96cdd3926d60425bd8980fe27f5a157b *inst/doc/rbiouml.pdf
 ddf1495ec6418a9be925ebc4338f8985 *inst/extdata/HIV-1.fa
 fd2a4a015eb8233b296e35a046a3a698 *man/biouml.analysis.Rd
 3750dbb29ba8a4c6a492a69acb1cc72d *man/biouml.analysis.list.Rd
