@@ -10,3 +10,8 @@
 \value{
   If extended is FALSE a character vector with child names, otherwise a data frame (\code{\link{data.frame}}) with row.names corresponding to child names and columns hasChildren and type.
 }
+\examples{\dontrun{
+## list databases available in public BioUML server
+biouml.login("ie.biouml.org")
+biouml.ls("databases")
+}}

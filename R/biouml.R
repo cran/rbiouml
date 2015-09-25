@@ -4,7 +4,7 @@ biouml.get <- function(path)
   tableInfo <- query("/web/table/columns")
   tableData <- query("/web/table/rawdata")
   
-  hidden <- sapply(tableInfo, function(colInfo) 'hidden' %in% names(colInfo) && colInfo['hidden'])
+  hidden <- sapply(tableInfo, function(colInfo) 'hidden' %in% names(colInfo) && colInfo['hidden']=='TRUE')
   tableInfo <- tableInfo[!hidden]
   names(tableData) <- sapply(tableInfo, function(colInfo) colInfo['name']);
   list.to.data.frame.fast(tableData[-1], tableData[[1]])
@@ -33,7 +33,7 @@ queryJSON <- function(serverPath, params=list(), simplify=T, reconnect=T)
   responseType <- as.numeric(as.list(json)$type)
   if( responseType == 3 && reconnect)
   {
-    con <- biouml.reconnect(con)
+    biouml.reconnect(getConnection())
     return(queryJSON(serverPath, params, simplify, reconnect=F))
   }
   else if(responseType != 0)

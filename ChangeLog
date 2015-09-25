@@ -1,0 +1,11 @@
+1.7
+*add examples
+1.6
+*fix reconnection
+*fix hidden columns
+1.5
+*use writeBin to write raw data
+*always use HTTP post
+*handle hidden colums
+*fix export binary
+1.4
