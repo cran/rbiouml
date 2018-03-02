@@ -160,7 +160,7 @@ biouml.put <- function(path, value)
 
   res <- list()
   res[[1]] <- row.names(value)
-  for(i in seq_len(ncol(value))) res[[ i + 1 ]] <- value[,i]
+  for(i in seq_len(ncol(value))) res[[ i + 1 ]] <- as.character(value[,i])
 
   queryJSON("/web/table/createTable", params=c(de=path, columns=toJSON(columns), data=toJSON(res)))
   invisible(NULL)
