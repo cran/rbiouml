@@ -22,6 +22,8 @@ biouml.query <- function(serverPath, params=character(), binary=F)
 {
   con <- getConnection()
   opts <- curlOptions( httpheader=paste("Cookie: JSESSIONID=", con$sessionId, sep='') )
+  if(length(params)==0)
+    params <- list(ignore_me="") #just to prevent warning message from rcurl::postForm
   url <- paste(con$url, serverPath, sep='')
   postForm(url, .params=params, .opts=opts, binary=binary)
 }

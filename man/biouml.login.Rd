@@ -16,7 +16,8 @@
   \item{sessionId}{session id returned by BioUML server}
 }
 \examples{\dontrun{
-## connect to public BioUML server at ie.biouml.org
-biouml.login("ie.biouml.org")
+## connect to public BioUML server at https://ict.biouml.org
+biouml.login("https://ict.biouml.org")
 getOption("biouml_connection")
+biouml.logout()
 }}

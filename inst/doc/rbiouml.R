@@ -4,7 +4,7 @@
 ### code chunk number 1: rbiouml.Rnw:35-37
 ###################################################
 library(rbiouml)
-biouml.login("ie.biouml.org")
+biouml.login("https://ict.biouml.org")
 
 
 ###################################################
@@ -31,8 +31,8 @@ head(x)
 ### code chunk number 5: rbiouml.Rnw:77-80
 ###################################################
 x[,5] <- x[,3] + x[,4]
-biouml.put("data/Collaboration/Demo/Data/Rtest/exp_data_1_sum", x)
-biouml.ls("data/Collaboration/Demo/Data/Rtest")
+biouml.put("data/Collaboration/Demo/tmp/exp_data_1_sum", x)
+biouml.ls("data/Collaboration/Demo/tmp")
 
 
 ###################################################
@@ -53,7 +53,7 @@ biouml.analysis.parameters("Filter table")
 biouml.analysis("Filter table", list(
   inputPath="data/Examples/Optimization/Data/Experiments/exp_data_1",
   filterExpression="time < 40",
-  outputPath="data/Collaboration/Demo/Data/Rtest/exp_data_1 filtered"
+  outputPath="data/Collaboration/Demo/tmp/exp_data_1 filtered"
 ))
 
 
@@ -67,7 +67,7 @@ head( biouml.importers() )
 ### code chunk number 10: rbiouml.Rnw:111-115
 ###################################################
 hiv.genome <- system.file("extdata","HIV-1.fa", package="rbiouml")
-output.folder <- "data/Collaboration/Demo/Data/Rtest"
+output.folder <- "data/Collaboration/Demo/tmp"
 biouml.import(hiv.genome, output.folder,  importer="Fasta format (*.fasta)")
 biouml.ls(output.folder)
 
@@ -76,7 +76,7 @@ biouml.ls(output.folder)
 ### code chunk number 11: rbiouml.Rnw:119-123
 ###################################################
 head( biouml.exporters() )
-biouml.export("data/Collaboration/Demo/Data/Rtest/HIV-1",
+biouml.export("data/Collaboration/Demo/tmp/HIV-1",
   exporter="Fasta format (*.fasta)", target.file="HIV-1.fa")
 file.exists("HIV-1.fa")
 

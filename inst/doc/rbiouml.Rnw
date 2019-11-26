@@ -30,11 +30,11 @@ tools for formalized description of biological systems structure and functioning
 \section{Getting started}
 \subsection{Connecting to BioUML server}
 The first thing you need to do is load the package and login to the BioUML server.
-As an example we will connect to the free public BioUML server at \url{http://ie.biouml.org}. 
+As an example we will connect to the free public BioUML server at \url{https://ict.biouml.org}. 
 The function \Rfunction{biouml.login} connects to BioUML server and perform authentication.
 <<>>=
 library(rbiouml)
-biouml.login("ie.biouml.org")
+biouml.login("https://ict.biouml.org")
 @
 The \Rfunction{biouml.login} also accepts user and password, but we leave them empty in the example above for anonymous login.
 Alternatively you can install BioUML on your local computer and connect to it in the same way.
@@ -76,8 +76,8 @@ representation, including profiles, user uploaded tracks and so on.
 To store data.frame as a table into BioUML repository use \Rfunction{biouml.put} function:
 <<>>=
 x[,5] <- x[,3] + x[,4]
-biouml.put("data/Collaboration/Demo/Data/Rtest/exp_data_1_sum", x)
-biouml.ls("data/Collaboration/Demo/Data/Rtest")
+biouml.put("data/Collaboration/Demo/tmp/exp_data_1_sum", x)
+biouml.ls("data/Collaboration/Demo/tmp")
 @
 
 \subsection{Using BioUML analyses}
@@ -96,7 +96,7 @@ The \Rfunction{biouml.analysis} launches analysis with given parameters.
 biouml.analysis("Filter table", list(
   inputPath="data/Examples/Optimization/Data/Experiments/exp_data_1",
   filterExpression="time < 40",
-  outputPath="data/Collaboration/Demo/Data/Rtest/exp_data_1 filtered"
+  outputPath="data/Collaboration/Demo/tmp/exp_data_1 filtered"
 ))
 @
 %\subsection{Using BioUML workflows}
@@ -110,7 +110,7 @@ head( biouml.importers() )
 As an example we will import fasta file to BioUML.
 <<>>=
 hiv.genome <- system.file("extdata","HIV-1.fa", package="rbiouml")
-output.folder <- "data/Collaboration/Demo/Data/Rtest"
+output.folder <- "data/Collaboration/Demo/tmp"
 biouml.import(hiv.genome, output.folder,  importer="Fasta format (*.fasta)")
 biouml.ls(output.folder)
 @
@@ -118,7 +118,7 @@ biouml.ls(output.folder)
 Similarly, we can use \Rfunction{biouml.export*} functions to export data from BioUML repository.
 <<>>=
 head( biouml.exporters() )
-biouml.export("data/Collaboration/Demo/Data/Rtest/HIV-1",
+biouml.export("data/Collaboration/Demo/tmp/HIV-1",
   exporter="Fasta format (*.fasta)", target.file="HIV-1.fa")
 file.exists("HIV-1.fa")
 @

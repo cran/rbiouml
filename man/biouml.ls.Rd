@@ -12,6 +12,7 @@
 }
 \examples{\dontrun{
 ## list databases available in public BioUML server
-biouml.login("ie.biouml.org")
+biouml.login("https://ict.biouml.org")
 biouml.ls("databases")
+biouml.logout()
 }}

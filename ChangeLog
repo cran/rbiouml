@@ -1,3 +1,7 @@
+1.9
+*use ict.biouml.org as main server
+*use https
+*fix warnings from rcurl
 1.8
 *fix json parsing error
 1.7
