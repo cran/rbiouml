@@ -144,7 +144,19 @@ as.tree <- function(values)
 as.name.value <- function(tree)
 {
   if(!is.list(tree)) return(tree)
-  lapply(seq_along(tree), function(i) list( name=names(tree)[i], value=as.name.value(tree[[i]]) ) )
+  n <- names(tree)
+  if(all( grepl('\\[\\d+\\]',n) ))
+  {
+    idx <- as.numeric(gsub('[][]','',n))
+    res <- list()
+    for(i in seq_along(idx))
+      res[[idx[i]]] <- as.name.value(tree[[i]])
+  }
+  else
+  {
+    res <- lapply(seq_along(tree), function(i) list( name=n[i], value=as.name.value(tree[[i]]) ) )
+  }
+  return(res)
 }
 
 biouml.put <- function(path, value)
