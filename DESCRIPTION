@@ -1,8 +1,8 @@
 Package: rbiouml
 Type: Package
 Title: Interact with BioUML Server
-Version: 1.10
-Date: 2020-07-06
+Version: 1.11
+Date: 2021-08-10
 Description: Functions for connecting to BioUML server, querying BioUML repository and launching BioUML analyses.
 Maintainer: Ivan Yevshin <ivan@dote.ru>
 Authors@R: c(person("Ivan", "Yevshin", role = c("aut", "cre"), email = "ivan@dote.ru"),
@@ -10,8 +10,8 @@ Authors@R: c(person("Ivan", "Yevshin", role = c("aut", "cre"), email = "ivan@dot
 License: GPL-2
 Depends: RCurl, RJSONIO
 NeedsCompilation: no
-Packaged: 2020-07-06 05:37:22 UTC; ivan
+Packaged: 2021-08-10 06:29:20 UTC; ivan
 Author: Ivan Yevshin [aut, cre],
   Tagir Valeev [aut]
 Repository: CRAN
-Date/Publication: 2020-07-06 05:50:05 UTC
+Date/Publication: 2021-08-10 09:00:02 UTC

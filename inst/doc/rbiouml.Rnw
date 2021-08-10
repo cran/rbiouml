@@ -14,6 +14,8 @@
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
 \newcommand{\Rpackage}[1]{{\textit{#1}}}
 
+\SweaveOpts{eval=FALSE}
+
 \author{Ivan Yevshin and Tagir Valeev}
 
 \begin{document}
@@ -58,17 +60,42 @@ The list of databases available in BioUML server:
 <<>>=
 biouml.ls("databases")
 @
+\begin{verbatim}
+ [1] "Biomodels"                         "EnsemblArabidopsisThaliana91"     
+ [3] "EnsemblFruitfly91"                 "EnsemblHuman85_38"                
+ [5] "EnsemblMouse81_38"                 "EnsemblNematoda91"                
+ [7] "EnsemblRat91"                      "EnsemblSaccharomycesCerevisiae91" 
+ [9] "EnsemblSchizosaccharomycesPombe91" "EnsemblZebrafish92"               
+[11] "GTRD"                              "HOCOMOCO v11"                     
+[13] "PantherDB 14"                      "Reactome Icons"                   
+[15] "Reactome63"                        "Tests SBML 3.3.0"                 
+[17] "Tests Stochastic"                  "Virtual Cell"                     
+[19] "Virtual Human"                    
+\end{verbatim}
+
 The list of data elements available in BioUML examples folder:
 <<>>=
 biouml.ls("data/Examples/Optimization/Data/Experiments")
 @
+\begin{verbatim}
+[1] "exp_data_1" "exp_data_2" "exp_data_3"
+\end{verbatim}
 
 The \Rfunction{biouml.get} fetches a table from BioUML repository as R data.frame:
 <<>>=
 x <- biouml.get("data/Examples/Optimization/Data/Experiments/exp_data_1")
-class(x)
 head(x)
 @
+\begin{verbatim}
+  time      p43p41     pro8      casp8
+0    0  0.05772537 59.96316 0.00000000
+1   10  0.26814367 57.56464 0.04107502
+2   20  4.76048117 58.58981 0.31611658
+3   30  8.25193519 59.42156 1.39735609
+4   45 16.14448337 48.18975 3.52037089
+5   60 17.02060557 38.95027 3.94722894
+\end{verbatim}
+
 
 This function allows to fetch not only true BioUML tables, but any data elements which have tabular
 representation, including profiles, user uploaded tracks and so on.
@@ -79,6 +106,9 @@ x[,5] <- x[,3] + x[,4]
 biouml.put("data/Collaboration/Demo/tmp/exp_data_1_sum", x)
 biouml.ls("data/Collaboration/Demo/tmp")
 @
+\begin{verbatim}
+[1] "exp_data_1_sum"
+\end{verbatim}
 
 \subsection{Using BioUML analyses}
 BioUML provides a set of analyses organized in groups.
@@ -86,11 +116,30 @@ The list of analyses available in the current server can be fetched with \Rfunct
 <<>>=
 summary( biouml.analysis.list() )
 @
+\begin{verbatim}
+ Import                          : 45   Add calculated column    :  1  
+ Molecular networks              : 18   Add expression values    :  1  
+ Differential algebraic equations: 17   Add reactants            :  1  
+ Table manipulation              : 15   Algebraic steady state   :  1  
+ Operations with genomic tracks  : 13   Annotate table           :  1  
+ Statistics                      : 13   Annotate track with genes:  1  
+ (Other)                         :105   (Other)                  :220  
+\end{verbatim}
+
 Each biouml analysis has a set of parameters, \Rfunction{biouml.analysis.parameters} returns
 a data.frame with row names corresponding to parameter names and one column 'description'.
 <<>>=
 biouml.analysis.parameters("Filter table")
 @
+\begin{verbatim}
+                                                                        description
+inputPath                                                           Table to filter
+filterExpression Expression in JavaScript like 'ColumnName1 > 5 && ColumnName2 < 0'
+filteringMode                                                  Which rows to select
+outputPath                                               Path to the filtered table
+\end{verbatim}
+
+
 The \Rfunction{biouml.analysis} launches analysis with given parameters.
 <<>>=
 biouml.analysis("Filter table", list(
@@ -99,6 +148,17 @@ biouml.analysis("Filter table", list(
   outputPath="data/Collaboration/Demo/tmp/exp_data_1 filtered"
 ))
 @
+\begin{verbatim}
+38 %
+INFO - Analysis 'Filter table' added to queue
+INFO - Analysis 'Filter table' started
+INFO - Filtering...
+100 %
+INFO - Writing result...
+INFO - Analysis 'Filter table' finished (1.04 s)
+[1] "RJOB155829081"
+\end{verbatim}
+
 %\subsection{Using BioUML workflows}
 \subsection{Importing files to and from BioUML}
 As described previously, data.frames can be fetched from and stored to BioUML repository using \Rfunction{biouml.get} and \Rfunction{biouml.put} functions.
@@ -107,21 +167,52 @@ The list of importers can be obtained with \Rfunction{biouml.importers} function
 <<>>=
 head( biouml.importers() )
 @
+\begin{verbatim}
+[1] "BioUML format(*.dml)"                
+[2] "BioUML Simulation result"            
+[3] "ZIP-archive (*.zip)"                 
+[4] "Generic file"                        
+[5] "Image file (*.png, *jpeg, *.gif etc)"
+[6] "Text file (*.txt)"       
+\end{verbatim}
+
 As an example we will import fasta file to BioUML.
 <<>>=
 hiv.genome <- system.file("extdata","HIV-1.fa", package="rbiouml")
 output.folder <- "data/Collaboration/Demo/tmp"
 biouml.import(hiv.genome, output.folder,  importer="Fasta format (*.fasta)")
+@
+\begin{verbatim}
+0 %
+100 %
+data/Collaboration/Demo/tmp/HIV-1[1] "data/Collaboration/Demo/tmp/HIV-1"
+\end{verbatim}
+
+<<>>=
 biouml.ls(output.folder)
 @
+\begin{verbatim}
+[1] "exp_data_1 filtered" "exp_data_1_sum" "HIV-1"
+\end{verbatim}
 
 Similarly, we can use \Rfunction{biouml.export*} functions to export data from BioUML repository.
 <<>>=
 head( biouml.exporters() )
+@
+\begin{verbatim}
+head( biouml.exporters() )
+[1] "JPEG file (*.jpg)"                 "Bitmap file(*.bmp)"               
+[3] "Portable Network Graphics (*.png)" "BioUML format(*.dml)"             
+[5] "BioUML state (*.xml)"              "Pair graph file(*.txt)"
+\end{verbatim}
+<<>>=
 biouml.export("data/Collaboration/Demo/tmp/HIV-1",
   exporter="Fasta format (*.fasta)", target.file="HIV-1.fa")
 file.exists("HIV-1.fa")
 @
+\begin{verbatim}
+[1] TRUE
+\end{verbatim}
 
 \subsection{Disconnecting from BioUML server}
 When you have finished with the BioUML server is recommended to do logout.

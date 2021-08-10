@@ -1,3 +1,6 @@
+1.11
+*fix CRAN Policy 'Packages which use Internet resources should fail gracefully with an informative message
+if the resource is not available or has changed (and not give a check warning nor error).'
 1.10
 *support arrays in biouml parameters
 1.9
